@@ -1,8 +1,27 @@
-resource "aws_instance" "name" {
-    ami="ami-0453ec754f44f9a4a"
-    key_name = "manaswi"
-    instance_type = "t2.micro"
-    availability_zone = "us-east-1b"
+pipeline {
+    agent any
 
-  
+    stages {
+        stage('git clone') {
+            steps {
+                git branch: 'main', url: 'https://github.com/Nityapenmatsa/jenkins.git'
+            }
+        }
+        stage('git init'){
+            steps{
+                sh "terraform init"
+            }
+        }
+        stage('git plan'){
+            steps{
+                sh "terraform plan"
+            }
+        }
+        stage('git apply'){
+            steps{
+                sh "terraform apply -auto-approve"
+            }
+        }
+    }
 }
+
